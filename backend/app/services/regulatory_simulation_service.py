@@ -250,7 +250,7 @@ class RegulatorySimulator:
         return recommendations
 
 
-def perform_regulatory_simulation(db: Session, sar_id: int) -> Dict[str, Any]:
+def simulate_regulatory_review(db: Session, sar_id: int) -> Dict[str, Any]:
     """
     Convenience function to run regulatory simulation
     Stores results and returns analysis

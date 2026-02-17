@@ -6,14 +6,14 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import Dict, Any
 from .. import models
-from ..database import get_db
+from ..db.session import get_db
 from ..services.risk_analysis_service import analyze_transaction_risk
 from ..services.regulatory_simulation_service import (
-    perform_regulatory_simulation,
+    simulate_regulatory_review,
     get_improvement_plan
 )
 from ..services.cross_case_intelligence_service import generate_intelligence_report
-from ..auth import get_current_user
+from ..core.deps import get_current_user
 
 router = APIRouter(prefix="/risk", tags=["Risk Analysis"])
 
@@ -71,7 +71,7 @@ def simulate_regulatory_review(
         )
     
     try:
-        simulation_results = perform_regulatory_simulation(db, sar_id)
+        simulation_results = simulate_regulatory_review(db, sar_id)
         
         # Get improvement plan
         improvement_plan = get_improvement_plan(simulation_results)
@@ -107,7 +107,7 @@ def check_filing_readiness(
         )
     
     try:
-        simulation = perform_regulatory_simulation(db, sar_id)
+        simulation = simulate_regulatory_review(db, sar_id)
         
         ready = simulation["regulatory_readiness"] in ["READY_TO_FILE", "MINOR_REVISIONS_NEEDED"]
         
