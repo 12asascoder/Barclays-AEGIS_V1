@@ -1,0 +1,37 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: aegis
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  chroma:
+    image: ghcr.io/chroma-core/chroma:latest
+    environment:
+      - CHROMA_SERVER_HOST=0.0.0.0
+    ports:
+      - "8000:8000"
+
+  backend:
+    build:
+      context: ../backend
+    volumes:
+      - ../backend:/app
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/aegis
+      - CHROMA_API_URL=http://chroma:8000
+      - JWT_SECRET=changeme-secret
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - chroma
+
+volumes:
+  db_data:

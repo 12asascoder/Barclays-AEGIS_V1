@@ -1,0 +1,14 @@
+{
+  "extends": "next/core-web-vitals",
+  "rules": {
+    "react/no-array-index-key": "off",
+    "no-nested-ternary": "off",
+    "@typescript-eslint/no-unused-vars": "off",
+    "prefer-template": "off",
+    "prefer-regex-literals": "off",
+    "sonarjs/no-nested-template-literals": "off",
+    "sonarjs/cognitive-complexity": "off",
+    "sonarjs/prefer-immediate-return": "off",
+    "unicorn/prefer-string-replace-all": "off"
+  }
+}
