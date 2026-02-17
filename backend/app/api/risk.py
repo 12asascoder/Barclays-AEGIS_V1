@@ -176,10 +176,10 @@ def get_risk_dashboard_summary(
         # Count by type
         type_counts[typ.detection_type] = type_counts.get(typ.detection_type, 0) + 1
         
-        # Parse metadata for severity
+        # Parse details for severity
         import json
         try:
-            meta = json.loads(typ.metadata) if typ.metadata else {}
+            meta = json.loads(typ.details) if typ.details else {}
             severity = meta.get("severity", "MEDIUM")
             if severity in severity_counts:
                 severity_counts[severity] += 1

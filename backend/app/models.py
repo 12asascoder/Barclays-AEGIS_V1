@@ -128,7 +128,7 @@ class AuditLog(Base):
     action = Column(String(200), nullable=False)
     entity_type = Column(String(100), nullable=True)
     entity_id = Column(String(100), nullable=True)
-    metadata = Column(Text, nullable=True)
+    meta_data = Column(Text, nullable=True)  # Renamed from 'metadata' (SQLAlchemy reserved word)
     timestamp = Column(DateTime, default=datetime.utcnow)
 
     user = relationship("User", back_populates="audit_logs")

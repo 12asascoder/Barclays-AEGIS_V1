@@ -89,7 +89,7 @@ class AuditLogRead(BaseModel):
     action: str
     entity_type: Optional[str]
     entity_id: Optional[str]
-    metadata: Optional[str]
+    meta_data: Optional[str]  # Renamed from 'metadata' (SQLAlchemy reserved word)
     timestamp: datetime
 
     class Config:

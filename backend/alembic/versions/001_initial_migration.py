@@ -141,7 +141,7 @@ def upgrade() -> None:
         sa.Column('action', sa.String(length=200), nullable=False),
         sa.Column('entity_type', sa.String(length=100), nullable=True),
         sa.Column('entity_id', sa.String(length=100), nullable=True),
-        sa.Column('metadata', sa.Text(), nullable=True),
+        sa.Column('meta_data', sa.Text(), nullable=True),  # Renamed from 'metadata' (SQLAlchemy reserved word)
         sa.Column('timestamp', sa.DateTime(), nullable=True),
         sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
         sa.PrimaryKeyConstraint('id')

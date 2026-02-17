@@ -21,7 +21,7 @@ class AuditMiddleware(BaseHTTPMiddleware):
         response = await call_next(request)
         try:
             db = get_session()
-            log = models.AuditLog(user_id=int(user_id) if user_id else None, action=f"{request.method} {request.url.path}", entity_type=None, entity_id=None, metadata=None, timestamp=datetime.utcnow())
+            log = models.AuditLog(user_id=int(user_id) if user_id else None, action=f"{request.method} {request.url.path}", entity_type=None, entity_id=None, meta_data=None, timestamp=datetime.utcnow())
             db.add(log)
             db.commit()
             db.remove()
