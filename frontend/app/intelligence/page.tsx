@@ -1,14 +1,30 @@
 'use client'
+
 import React, { useEffect, useState } from 'react'
 import ProtectedRoute from '@/components/ProtectedRoute'
-import { useAuth } from '@/lib/AuthContext'
-import Link from 'next/link'
+import { motion, AnimatePresence } from 'framer-motion'
+import { 
+  BrainCircuit, 
+  TrendingUp, 
+  TrendingDown, 
+  AlertCircle, 
+  ShieldAlert, 
+  Network, 
+  Layers, 
+  Zap,
+  Target,
+  ChevronRight,
+  RefreshCw,
+  Search,
+  Filter
+} from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { api } from '@/lib/api'
 
 export default function IntelligencePage() {
   const [intelligence, setIntelligence] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const { user } = useAuth()
 
   useEffect(() => {
     fetchIntelligence()
@@ -17,14 +33,11 @@ export default function IntelligencePage() {
   const fetchIntelligence = async () => {
     try {
       setLoading(true)
-      const response = await fetch('http://localhost:8000/api/risk/intelligence/cross-case', {
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-      })
-      if (!response.ok) {
-        throw new Error('Failed to fetch intelligence report')
+      const response = await api.get('/risk/intelligence/cross-case')
+      if (response.status !== 200) {
+        throw new Error('Access Denied: Admin or Auditor role equivalent required for Cross-Case analysis.')
       }
-      const data = await response.json()
-      setIntelligence(data.intelligence)
+      setIntelligence(response.data.intelligence)
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -34,30 +47,28 @@ export default function IntelligencePage() {
 
   if (loading) {
     return (
-      <ProtectedRoute>
-        <div className="flex items-center justify-center h-screen">
-          <div className="text-xl">Generating intelligence report...</div>
-        </div>
-      </ProtectedRoute>
+      <div className="flex flex-col items-center justify-center h-[calc(100vh-160px)]">
+         <div className="relative">
+            <div className="w-20 h-20 border-2 border-blue-500/10 rounded-full" />
+            <div className="absolute inset-0 w-20 h-20 border-t-2 border-blue-500 rounded-full animate-spin" />
+            <BrainCircuit className="absolute inset-0 m-auto w-8 h-8 text-blue-500 animate-pulse" />
+         </div>
+         <p className="mt-6 text-slate-400 font-bold uppercase tracking-[0.2em] text-[10px]">Aggregating Data Clusters...</p>
+      </div>
     )
   }
 
   if (error) {
     return (
       <ProtectedRoute>
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-red-800 dark:text-red-200 mb-2">
-              Error Loading Intelligence Report
-            </h3>
-            <p className="text-red-600 dark:text-red-300">{error}</p>
-            <p className="text-sm text-red-500 dark:text-red-400 mt-2">
-              This feature requires admin or auditor role.
-            </p>
-          </div>
-          <Link href="/dashboard" className="mt-4 inline-block text-blue-600 hover:underline">
-            ← Back to Dashboard
-          </Link>
+        <div className="max-w-4xl mx-auto py-20 text-center">
+            <ShieldAlert className="w-20 h-20 text-red-500/50 mx-auto mb-6" />
+            <h2 className="text-3xl font-bold font-outfit mb-4">Security <span className="text-red-500">Restriction</span></h2>
+            <p className="text-slate-400 mb-8 max-w-lg mx-auto leading-relaxed">{error}</p>
+            <div className="flex justify-center gap-4">
+               <button onClick={fetchIntelligence} className="px-6 py-2.5 bg-white/5 border border-white/10 rounded-xl font-bold text-xs hover:bg-white/10 transition-all">TRY AGAIN</button>
+               <button onClick={() => window.history.back()} className="glossy-button">RETURN TO SECURE ZONE</button>
+            </div>
         </div>
       </ProtectedRoute>
     )
@@ -65,352 +76,220 @@ export default function IntelligencePage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        {/* Header */}
-        <div className="bg-white dark:bg-gray-800 shadow">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div className="flex justify-between items-center">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                  Cross-Case Intelligence Report
-                </h1>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                  Emerging threats, typology drift, and network analysis
-                </p>
-              </div>
-              <Link 
-                href="/dashboard" 
-                className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition"
-              >
-                ← Dashboard
-              </Link>
+      <div className="max-w-[1600px] mx-auto space-y-12 animate-fade-in">
+        {/* Intelligence Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/5 pb-10">
+          <div>
+            <div className="flex items-center gap-2 mb-4">
+               <div className="px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 text-[10px] font-bold uppercase tracking-widest border border-blue-500/20">Strategic Intel</div>
+               <div className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 text-[10px] font-bold uppercase tracking-widest border border-emerald-500/20">Level 5 Access</div>
             </div>
+            <h1 className="text-5xl font-bold font-outfit tracking-tighter">
+              Cross-Case <span className="premium-gradient-text">Intelligence</span>
+            </h1>
+            <p className="text-slate-400 mt-3 max-w-2xl font-medium">
+              ML-driven analysis across the entire SAR catalog identifying typology drift, cluster anomalies, and emerging threats.
+            </p>
           </div>
+          <button onClick={fetchIntelligence} className="p-3 rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 transition-all flex items-center gap-2">
+            <RefreshCw className="w-4 h-4" />
+            <span className="text-xs font-bold uppercase tracking-widest">Re-Sync Analysis</span>
+          </button>
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-                Cases Analyzed
-              </h3>
-              <div className="text-3xl font-bold text-gray-900 dark:text-white">
-                {intelligence?.total_cases_analyzed ?? 0}
-              </div>
-            </div>
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-                Drift Alerts
-              </h3>
-              <div className="text-3xl font-bold text-orange-600 dark:text-orange-400">
-                {intelligence?.drift_alerts?.length ?? 0}
-              </div>
-            </div>
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-                Emerging Threats
-              </h3>
-              <div className="text-3xl font-bold text-red-600 dark:text-red-400">
-                {intelligence?.emerging_typologies?.length ?? 0}
-              </div>
-            </div>
-          </div>
+        {/* Intelligence Summary Row */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+           <SummaryWidget label="Cases Analyzed" value={intelligence?.total_cases_analyzed} icon={<Layers className="w-5 h-5" />} />
+           <SummaryWidget label="Detected Clusters" value={intelligence?.pattern_clusters?.length} icon={<Network className="w-5 h-5" />} color="blue" />
+           <SummaryWidget label="Typology Drift Alerts" value={intelligence?.drift_alerts?.length} icon={<TrendingUp className="w-5 h-5" />} color="amber" isWarning />
+           <SummaryWidget label="Emerging Typologies" value={intelligence?.emerging_typologies?.length} icon={<Zap className="w-5 h-5" />} color="red" isCritical />
+        </div>
 
-          {/* Executive Recommendations */}
-          {intelligence?.recommendations && intelligence.recommendations.length > 0 && (
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                🎯 Executive Recommendations
-              </h2>
-              <div className="space-y-4">
-                {intelligence.recommendations.map((rec: any, idx: number) => (
-                  <div 
-                    key={idx}
-                    className={`border-l-4 p-4 rounded ${
-                      rec.priority === 'CRITICAL' ? 'border-red-500 bg-red-50 dark:bg-red-900/20' :
-                      rec.priority === 'HIGH' ? 'border-orange-500 bg-orange-50 dark:bg-orange-900/20' :
-                      'border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20'
-                    }`}
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className={`text-xs font-bold px-2 py-1 rounded ${
-                            rec.priority === 'CRITICAL' ? 'bg-red-600 text-white' :
-                            rec.priority === 'HIGH' ? 'bg-orange-600 text-white' :
-                            'bg-yellow-600 text-white'
-                          }`}>
-                            {rec.priority}
-                          </span>
-                          <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                            {rec.category}
-                          </span>
-                        </div>
-                        <p className="text-sm text-gray-900 dark:text-gray-100 font-medium mb-1">
-                          Finding: {rec.finding}
-                        </p>
-                        <p className="text-sm text-gray-700 dark:text-gray-300 mb-1">
-                          Action: {rec.action}
-                        </p>
-                        <p className="text-xs text-gray-600 dark:text-gray-400">
-                          Impact: {rec.impact}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Drift Alerts */}
-          {intelligence?.drift_alerts && intelligence.drift_alerts.length > 0 && (
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                📊 Typology Drift Alerts
-              </h2>
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                  <thead className="bg-gray-50 dark:bg-gray-700">
-                    <tr>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
-                        Typology
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
-                        Trend
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
-                        Change
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
-                        Severity
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
-                        Recommendation
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                    {intelligence.drift_alerts.map((alert: any, idx: number) => (
-                      <tr key={idx}>
-                        <td className="px-4 py-3 text-sm font-medium text-gray-900 dark:text-white">
-                          {alert.typology}
-                        </td>
-                        <td className="px-4 py-3 text-sm">
-                          <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                            alert.trend === 'INCREASING' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' :
-                            'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
-                          }`}>
-                            {alert.trend === 'INCREASING' ? '↑' : '↓'} {alert.trend}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3 text-sm text-gray-900 dark:text-white font-semibold">
-                          {alert.change_percentage}
-                        </td>
-                        <td className="px-4 py-3 text-sm">
-                          <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                            alert.severity === 'HIGH' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300' :
-                            'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
-                          }`}>
-                            {alert.severity}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-                          {alert.recommendation}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-
-          {/* Emerging Typologies */}
-          {intelligence?.emerging_typologies && intelligence.emerging_typologies.length > 0 && (
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                🚨 Emerging Threats
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {intelligence.emerging_typologies.map((threat: any, idx: number) => (
-                  <div 
-                    key={idx}
-                    className="border border-gray-200 dark:border-gray-700 rounded-lg p-4"
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-lg font-bold text-gray-900 dark:text-white">
-                        {threat.pattern_keyword.toUpperCase()}
-                      </span>
-                      <span className={`px-2 py-1 rounded text-xs font-bold ${
-                        threat.risk_level === 'HIGH' ? 'bg-red-600 text-white' :
-                        'bg-orange-600 text-white'
-                      }`}>
-                        {threat.risk_level}
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                      Frequency: <span className="font-semibold">{threat.frequency}</span> recent SARs
-                    </p>
-                    <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
-                      {threat.description}
-                    </p>
-                    <p className="text-xs text-blue-600 dark:text-blue-400 font-medium">
-                      → {threat.recommendation}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Pattern Clusters */}
-          {intelligence?.pattern_clusters && intelligence.pattern_clusters.length > 0 && (
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                🔍 Pattern Clusters
-              </h2>
-              <div className="space-y-4">
-                {intelligence.pattern_clusters.map((cluster: any, idx: number) => (
-                  <div 
-                    key={idx}
-                    className="border border-gray-200 dark:border-gray-700 rounded-lg p-4"
-                  >
-                    <div className="flex items-center gap-4 mb-2">
-                      <span className="text-lg font-bold text-gray-900 dark:text-white">
-                        Cluster {cluster.cluster_id + 1}
-                      </span>
-                      <span className="text-sm text-gray-600 dark:text-gray-400">
-                        {cluster.size} SARs
-                      </span>
-                      <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
-                        {cluster.pattern_type}
-                      </span>
-                    </div>
-                    <div className="mb-2">
-                      <span className="text-sm text-gray-600 dark:text-gray-400">
-                        Common Keywords:
-                      </span>
-                      <div className="flex flex-wrap gap-2 mt-1">
-                        {cluster.common_keywords.map((keyword: string, kidx: number) => (
-                          <span 
-                            key={kidx}
-                            className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded text-xs"
-                          >
-                            {keyword}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Network Risks */}
-          {intelligence?.network_risks && intelligence.network_risks.length > 0 && (
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                🕸️ Network Risks (Repeat Offenders)
-              </h2>
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                  <thead className="bg-gray-50 dark:bg-gray-700">
-                    <tr>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
-                        Customer
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
-                        Case Count
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
-                        Risk Score
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
-                        Recommendation
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                    {intelligence.network_risks.map((risk: any, idx: number) => (
-                      <tr key={idx}>
-                        <td className="px-4 py-3 text-sm">
-                          <div className="font-medium text-gray-900 dark:text-white">
-                            {risk.customer_name}
-                          </div>
-                          <div className="text-xs text-gray-500 dark:text-gray-400">
-                            {risk.customer_id}
-                          </div>
-                        </td>
-                        <td className="px-4 py-3 text-sm text-gray-900 dark:text-white font-semibold">
-                          {risk.case_count}
-                        </td>
-                        <td className="px-4 py-3 text-sm">
-                          <div className="flex items-center">
-                            <div className="w-24 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-2">
-                              <div 
-                                className="bg-red-600 h-2 rounded-full"
-                                style={{ width: `${risk.risk_score * 100}%` }}
-                              ></div>
+        {/* Deep Intel Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+           {/* Left Column: Recommendations & Emerging */}
+           <div className="lg:col-span-8 space-y-12">
+              {/* Executive Action Items */}
+              <section>
+                 <div className="flex items-center gap-3 mb-6">
+                    <Target className="w-6 h-6 text-blue-500" />
+                    <h2 className="text-2xl font-bold font-outfit">Strategic Actions</h2>
+                 </div>
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {intelligence?.recommendations?.map((rec: any, idx: number) => (
+                      <motion.div 
+                        whileHover={{ y: -5 }}
+                        key={idx} 
+                        className={cn("glass-card overflow-hidden p-6 relative group", 
+                           rec.priority === 'CRITICAL' ? 'border-red-500/20' : 
+                           rec.priority === 'HIGH' ? 'border-orange-500/20' : 'border-amber-500/20'
+                        )}
+                      >
+                         <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-30 transition-opacity">
+                            <ShieldAlert className="w-16 h-16" />
+                         </div>
+                         <div className="relative z-10 flex flex-col h-full">
+                            <div className="flex items-center gap-2 mb-4">
+                               <span className={cn("text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-tighter", 
+                                  rec.priority === 'CRITICAL' ? 'bg-red-500 text-white' : 
+                                  rec.priority === 'HIGH' ? 'bg-orange-500 text-black' : 'bg-amber-500 text-black'
+                               )}>
+                                  {rec.priority}
+                               </span>
+                               <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{rec.category}</span>
                             </div>
-                            <span className="text-gray-900 dark:text-white font-medium">
-                              {(risk.risk_score * 100).toFixed(0)}%
-                            </span>
-                          </div>
-                        </td>
-                        <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-                          {risk.recommendation}
-                        </td>
-                      </tr>
+                            <h3 className="font-bold text-lg mb-2">{rec.finding}</h3>
+                            <p className="text-sm text-slate-400 mb-6 leading-relaxed italic">"{rec.action}"</p>
+                            <div className="mt-auto pt-4 border-t border-white/5">
+                               <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Expected Strategic Impact</span>
+                               <div className="text-blue-400 font-bold text-sm tracking-tight">{rec.impact}</div>
+                            </div>
+                         </div>
+                      </motion.div>
                     ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
+                 </div>
+              </section>
 
-          {/* Temporal Trends */}
-          {intelligence?.temporal_trends && (
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                📈 Temporal Trends
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-gray-50 dark:bg-gray-700 rounded p-4">
-                  <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-                    Trend Direction
-                  </h4>
-                  <div className={`text-2xl font-bold ${
-                    intelligence.temporal_trends.trend_direction === 'INCREASING' ? 'text-red-600' :
-                    intelligence.temporal_trends.trend_direction === 'DECREASING' ? 'text-green-600' :
-                    'text-gray-600'
-                  }`}>
-                    {intelligence.temporal_trends.trend_direction}
-                  </div>
-                </div>
-                <div className="bg-gray-50 dark:bg-gray-700 rounded p-4">
-                  <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-                    Volume Change
-                  </h4>
-                  <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                    {intelligence.temporal_trends.volume_change_pct}
-                  </div>
-                </div>
-                <div className="bg-gray-50 dark:bg-gray-700 rounded p-4">
-                  <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-                    Recent Monthly Avg
-                  </h4>
-                  <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                    {intelligence.temporal_trends.recent_monthly_avg}
-                  </div>
-                </div>
+              {/* Emerging Threat Grid */}
+              <section>
+                 <div className="flex items-center gap-3 mb-6">
+                    <Zap className="w-6 h-6 text-red-500" />
+                    <h2 className="text-2xl font-bold font-outfit">Emerging Vulnerabilities</h2>
+                 </div>
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {intelligence?.emerging_typologies?.map((threat: any, idx: number) => (
+                       <div key={idx} className="glass-card p-6 border-red-500/10 hover:border-red-500/30 transition-all">
+                          <div className="flex items-center justify-between mb-4">
+                             <div className="w-12 h-12 rounded-xl bg-red-500/5 flex items-center justify-center text-red-500 border border-red-500/10">
+                                <AlertCircle className="w-6 h-6" />
+                             </div>
+                             <div className="text-right">
+                                <div className="text-[9px] font-bold text-slate-500 uppercase">Risk Index</div>
+                                <div className="text-lg font-black text-red-500">{threat.risk_level}</div>
+                             </div>
+                          </div>
+                          <h4 className="text-xl font-bold font-outfit mb-2 text-white/90 uppercase tracking-tighter tracking-tightest">
+                            {threat.pattern_keyword}
+                          </h4>
+                          <p className="text-sm text-slate-400 leading-relaxed mb-4">{threat.description}</p>
+                          <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                             <span className="text-xs font-bold text-slate-500 uppercase italic">SAR Frequency: <span className="text-white">{threat.frequency} cases</span></span>
+                             <button className="text-red-400 text-[10px] font-bold uppercase tracking-widest flex items-center gap-1 group">
+                                View Clusters
+                                <ChevronRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                             </button>
+                          </div>
+                       </div>
+                    ))}
+                 </div>
+              </section>
+           </div>
+
+           {/* Right Column: Drift Alerts & Networks */}
+           <div className="lg:col-span-4 space-y-12">
+              {/* Typology Drift Module */}
+              <div className="glass-card overflow-hidden">
+                 <div className="p-6 bg-white/5 border-b border-white/10 flex items-center justify-between">
+                    <h3 className="text-lg font-bold font-outfit">Typology Drift</h3>
+                    <TrendingUp className="w-4 h-4 text-slate-500" />
+                 </div>
+                 <div className="divide-y divide-white/5">
+                    {intelligence?.drift_alerts?.map((alert: any, idx: number) => (
+                       <div key={idx} className="p-5 hover:bg-white/[0.02] transition-colors group">
+                          <div className="flex items-center justify-between mb-2">
+                             <span className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors uppercase tracking-tight">{alert.typology}</span>
+                             <div className={cn("flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded leading-none", 
+                                alert.trend === 'INCREASING' ? 'bg-red-500/10 text-red-500' : 'bg-emerald-500/10 text-emerald-500'
+                             )}>
+                                {alert.trend === 'INCREASING' ? <TrendingUp className="w-2.5 h-2.5" /> : <TrendingDown className="w-2.5 h-2.5" />}
+                                {alert.change_percentage}
+                             </div>
+                          </div>
+                          <div className="text-[10px] text-slate-500 font-medium mb-3 italic">Strategy: {alert.recommendation}</div>
+                          <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+                             <div className={cn("h-full rounded-full transition-all duration-1000", alert.trend === 'INCREASING' ? 'bg-red-500 w-[80%]' : 'bg-emerald-500 w-[60%]')} />
+                          </div>
+                       </div>
+                    ))}
+                 </div>
               </div>
-            </div>
-          )}
+
+              {/* Recurring Entity Network */}
+              <div className="glass-card p-6">
+                 <div className="flex items-center justify-between mb-8">
+                    <h3 className="text-lg font-bold font-outfit">Recurring Offenders</h3>
+                    <span className="text-[10px] font-bold text-slate-500 bg-white/5 px-2 py-0.5 rounded uppercase tracking-widest">Network Risk</span>
+                 </div>
+                 <div className="space-y-6">
+                    {intelligence?.network_risks?.map((risk: any, idx: number) => (
+                       <div key={idx} className="flex gap-4">
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-slate-700 to-slate-800 flex items-center justify-center shrink-0 border border-white/10 shadow-lg text-xs font-bold font-outfit">
+                             {risk.customer_name.substring(0, 2).toUpperCase()}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                             <div className="flex justify-between items-start mb-1 overflow-hidden">
+                                <h4 className="text-sm font-bold text-white truncate pr-2 uppercase tracking-tight">{risk.customer_name}</h4>
+                                <span className="text-[10px] font-bold text-red-400 shrink-0">{(risk.risk_score * 100).toFixed(0)}% RISK</span>
+                             </div>
+                             <p className="text-[10px] text-slate-500 uppercase tracking-widest mb-2 font-bold leading-none">{risk.case_count} RECENT SAR FILINGS</p>
+                             <div className="p-3 bg-white/5 rounded-xl border border-white/5 text-[10px] text-slate-400 leading-relaxed italic">
+                                "{risk.recommendation}"
+                             </div>
+                          </div>
+                       </div>
+                    ))}
+                 </div>
+              </div>
+
+              {/* Cluster Map Metadata */}
+              <div className="glass-card p-6 relative overflow-hidden group">
+                  <div className="relative z-10">
+                     <h3 className="text-lg font-bold font-outfit mb-2">Pattern Clusters</h3>
+                     <p className="text-xs text-slate-400 mb-6 leading-relaxed">Cross-case grouping of related typologies detected via ML clustering algorithms.</p>
+                     
+                     <div className="space-y-3">
+                        {intelligence?.pattern_clusters?.map((cluster: any, idx: number) => (
+                           <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5 group-hover:bg-blue-600/5 transition-colors">
+                              <span className="text-[11px] font-bold text-white uppercase tracking-tighter">Cluster #{cluster.cluster_id + 1}: {cluster.pattern_type}</span>
+                              <span className="text-[10px] font-bold text-blue-400 px-2 py-0.5 rounded-full bg-blue-400/10 border border-blue-400/20">{cluster.size} SARs</span>
+                           </div>
+                        ))}
+                     </div>
+                  </div>
+                  <Layers className="absolute -bottom-8 -right-8 w-40 h-40 text-blue-500/[0.03] group-hover:rotate-12 transition-transform duration-700" />
+              </div>
+           </div>
         </div>
       </div>
     </ProtectedRoute>
+  )
+}
+
+function SummaryWidget({ label, value, icon, color = 'blue', isWarning = false, isCritical = false }: any) {
+  const colorMap: any = {
+    blue: 'text-blue-400 border-blue-500/20 bg-blue-500/5',
+    amber: 'text-amber-400 border-amber-500/20 bg-amber-500/5',
+    red: 'text-red-400 border-red-500/20 bg-red-500/5'
+  }
+
+  return (
+    <motion.div 
+      whileHover={{ y: -4 }}
+      className={cn("glass-card p-6 flex items-center justify-between group cursor-default shadow-lg", 
+         isWarning && "border-amber-500/20",
+         isCritical && "border-red-500/20 shadow-[0_0_40px_-15px_rgba(239,68,68,0.2)]"
+      )}
+    >
+       <div className="space-y-2">
+          <p className="stat-label mb-1 opacity-60 group-hover:opacity-100 transition-opacity">{label}</p>
+          <div className="text-4xl font-black font-outfit flex items-baseline gap-1">
+             {value || 0}
+             <span className="text-xs font-bold text-slate-700 uppercase tracking-widest px-1">Units</span>
+          </div>
+       </div>
+       <div className={cn("p-4 rounded-2xl border transition-all duration-300 group-hover:scale-110", colorMap[color])}>
+          {icon}
+       </div>
+    </motion.div>
   )
 }
