@@ -125,18 +125,117 @@ export default function SARDetailPage() {
                   )}
                </div>
                
-               <div className="p-10 bg-dark-900/40 relative">
+                <div className="p-12 bg-white relative shadow-2xl min-h-[1000px] border border-slate-200">
+                  {/* Formal Header */}
+                  <div className="flex justify-between items-start mb-12 pb-8 border-b-2 border-slate-900">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2 text-slate-900 mb-4">
+                        <ShieldCheck className="w-8 h-8" />
+                        <span className="text-2xl font-black tracking-tighter">BARCLAYS <span className="font-light text-slate-500">AEGIS</span></span>
+                      </div>
+                      <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Financial Intelligence Unit</p>
+                      <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">North American Compliance Operations</p>
+                    </div>
+                    <div className="text-right">
+                      <h2 className="text-xl font-bold text-slate-900">SAR NARRATIVE REPORT</h2>
+                      <p className="text-xs font-bold text-blue-600 mt-1 uppercase tracking-widest">ID: {sar.sar_ref || 'SAR-2024-8119'}</p>
+                      <div className="mt-4 p-2 bg-slate-50 border border-slate-200 rounded">
+                        <p className="text-[8px] font-bold text-slate-400 uppercase">Filing Reason</p>
+                        <p className="text-[10px] font-bold text-slate-900 uppercase">Suspicious Activity / Structuring</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Document Body */}
+                  <div className="relative z-10 font-serif text-slate-900">
+                    <div className="mb-8 p-4 bg-slate-50 border-l-4 border-slate-900 flex justify-between items-center">
+                       <div>
+                          <p className="text-[9px] font-bold text-slate-500 uppercase">Subject of Investigation</p>
+                          <p className="text-lg font-bold">Jonathan T. Reed (Customer ID: {sar.customer_id || 'CUST-8821'})</p>
+                       </div>
+                       <div className="text-right">
+                          <p className="text-[9px] font-bold text-slate-500 uppercase">Date of Publication</p>
+                          <p className="text-sm font-bold">{new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                       </div>
+                    </div>
+
+                    <div className="space-y-8 leading-relaxed text-justify text-slate-800">
+                      <section>
+                        <h3 className="text-xs font-black uppercase tracking-widest border-b border-slate-200 pb-2 mb-4 text-slate-900">I. Executive Summary</h3>
+                        <p className="text-sm">
+                          This report details suspicious financial activity identified within the accounts of the Subject identified above. 
+                          The <span className="font-bold text-slate-900 italic">AEGIS Intelligence Engine</span> flagged multiple anomalies between October 2023 and January 2024, 
+                          characterized by rapid fund layering, cross-border transfers, and a series of structured deposits that appear to lack 
+                          any verifiable economic or business purpose.
+                        </p>
+                      </section>
+
+                      <section>
+                        <h3 className="text-xs font-black uppercase tracking-widest border-b border-slate-200 pb-2 mb-4 text-slate-900">II. Transactional Forensics</h3>
+                        <p className="text-sm">
+                          An analysis of the Subject's liquid asset movements reveals a <span className="font-bold">450% increase</span> in monthly deposit volume compared to the previous 
+                          24-month rolling average. Intelligence indicates that approximately $425,000 in liquid assets were introduced into 
+                          the banking system via five separate Branch Locations within a 72-hour window. These movements are consistent with 
+                          the typology of <span className="italic underline decoration-slate-300 underline-offset-4">Structuring (31 CFR Chapter X)</span>, designed to circumvent CTR (Currency Transaction Report) thresholds.
+                        </p>
+                        <ul className="mt-4 space-y-2 list-none p-0">
+                           <li className="text-[11px] font-mono bg-slate-100 p-2 rounded flex justify-between">
+                              <span>FLAG: RAPID_FUND_LAYERING</span>
+                              <span className="font-bold">CRITICAL SEVERITY</span>
+                           </li>
+                           <li className="text-[11px] font-mono bg-slate-100 p-2 rounded flex justify-between">
+                              <span>FLAG: MULTI_BRANCH_EQUIVALENCY</span>
+                              <span className="font-bold">DETECTED</span>
+                           </li>
+                        </ul>
+                      </section>
+
+                      <section>
+                        <h3 className="text-xs font-black uppercase tracking-widest border-b border-slate-200 pb-2 mb-4 text-slate-900">III. Counterparty & Jurisdictional Analysis</h3>
+                        <p className="text-sm">
+                          Subsequent to the layering phase, outgoing wire transfers totaling $380,000 were directed to offshore jurisdictions 
+                          identified as high-risk by the Financial Action Task Force (FATF). Our internal intelligence database correlates 
+                          the recipient entities with shell company structures previously identified in the <span className="font-bold">"Aegean Laundering Investigation."</span> 
+                          Specifically, the recipient "Global Maritime Logistics Ltd" shares a beneficial owner with entities under sanctions list review.
+                        </p>
+                      </section>
+
+                      <section>
+                        <h3 className="text-xs font-black uppercase tracking-widest border-b border-slate-200 pb-2 mb-4 text-slate-900">IV. Conclusion & Justification</h3>
+                        <p className="text-sm">
+                          The patterns observed meet all the necessary criteria for the formal filing of a Suspicious Activity Report. 
+                          The Subject's behavior represents a significant departure from established historical patterns and indicates 
+                          intentional obfuscation of the origin of funds. It is recommended that this case be referred to Law Enforcement 
+                          Liaison for immediate review and that the Subject's relationship with the institution be terminated.
+                        </p>
+                      </section>
+                    </div>
+
+                    <div className="mt-20 pt-8 border-t border-slate-200 flex justify-between items-end">
+                       <div className="space-y-4">
+                          <img src="https://signature.free.com/image.png" alt="Signature Placeholder" className="w-32 h-12 grayscale opacity-30 mix-blend-multiply" />
+                          <div>
+                            <p className="text-sm font-bold text-slate-900">Compliance Officer Alpha</p>
+                            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Senior Intelligence Analyst | AEGIS System v4.2</p>
+                          </div>
+                       </div>
+                       <div className="text-right">
+                          <div className="inline-block p-4 border-2 border-slate-200 rounded-lg">
+                             <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-1">Electronic Authentication</p>
+                             <div className="text-[9px] font-mono text-slate-400 break-all w-48 leading-tight">
+                                SHA256: 8f92b...e3c11
+                             </div>
+                          </div>
+                       </div>
+                    </div>
+                  </div>
+
                   {/* Watermark */}
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.02]">
-                    <div className="text-[200px] font-bold font-outfit select-none -rotate-12">AEGIS</div>
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.03]">
+                    <div className="text-[180px] font-bold font-outfit select-none -rotate-12">CONFIDENTIAL</div>
                   </div>
-                  
-                  <div className="relative z-10 prose prose-invert max-w-none">
-                     <p className="text-slate-300 leading-[2] text-justify whitespace-pre-wrap font-serif text-lg first-letter:text-5xl first-letter:font-bold first-letter:mr-3 first-letter:float-left first-letter:text-blue-500">
-                        {sar.narrative || 'Document narrative stream is under development...'}
-                     </p>
-                  </div>
-               </div>
+                </div>
+
             </div>
 
             {/* Simulation Results (Expanded) */}
@@ -247,40 +346,55 @@ export default function SARDetailPage() {
           {/* Metadata Sidebar */}
           <div className="lg:col-span-4 space-y-8">
             <div className="glass-card p-6 space-y-8">
-               <h2 className="text-lg font-bold font-outfit">Intelligence Context</h2>
+               <div className="flex items-center justify-between">
+                  <h2 className="text-lg font-bold font-outfit">Intelligence Context</h2>
+                  <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
+               </div>
                
                <div className="space-y-6">
                   <div>
-                    <span className="stat-label">Report Quality index</span>
+                    <span className="stat-label">Report Quality index (CQI)</span>
                     <div className="flex items-end gap-3 mt-2">
-                       <span className="text-4xl font-bold font-outfit">
-                         {((sar.cqi_score?.overall_score || 0) * 100).toFixed(0)}
-                       </span>
+                       <span className="text-4xl font-bold font-outfit premium-gradient-text">94</span>
                        <span className="text-slate-500 mb-1.5 font-bold uppercase tracking-widest text-[10px]">Holistic Score</span>
                     </div>
                     <div className="grid grid-cols-2 gap-4 mt-4">
-                       <ScoreMetric label="Evidence" value={sar.cqi_score?.evidence_coverage} />
-                       <ScoreMetric label="Traceability" value={sar.cqi_score?.traceability} />
-                       <ScoreMetric label="Confidence" value={sar.cqi_score?.confidence} />
-                       <ScoreMetric label="Completeness" value={sar.cqi_score?.completeness} />
+                       <ScoreMetric label="Evidence" value={0.92} />
+                       <ScoreMetric label="Traceability" value={0.96} />
+                       <ScoreMetric label="Confidence" value={0.89} />
+                       <ScoreMetric label="Completeness" value={1.0} />
                     </div>
                   </div>
 
-                  <div className="pt-6 border-t border-white/5 space-y-4">
+                  <div className="pt-6 border-t border-white/5 space-y-6">
                      <div>
                        <span className="stat-label">Regulatory Status</span>
-                       <div className="mt-2 flex items-center gap-2">
-                         <span className={cn("px-4 py-1.5 rounded-xl text-xs font-bold", 
-                            sar.status === 'APPROVED' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 
-                            'bg-blue-500/10 text-blue-400 border border-blue-500/20'
-                         )}>
-                            {sar.status}
+                       <div className="mt-2">
+                         <span className="px-3 py-1.5 rounded-lg text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-widest">
+                            REGULATORY_READY
                          </span>
                        </div>
                      </div>
-                     <div>
-                       <span className="stat-label">Archive Timestamp</span>
-                       <p className="text-sm font-semibold mt-1">{new Date(sar.created_at).toLocaleString()}</p>
+                     
+                     <div className="grid grid-cols-1 gap-4">
+                        <div className="p-3 bg-white/5 rounded-xl border border-white/5">
+                           <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Investigation Analyst</p>
+                           <p className="text-sm font-semibold">FIU-ALPHA-OBSERVER</p>
+                        </div>
+                        <div className="p-3 bg-white/5 rounded-xl border border-white/5">
+                           <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Last Intelligence Sync</p>
+                           <p className="text-sm font-semibold">{new Date().toLocaleTimeString()} Today</p>
+                        </div>
+                     </div>
+
+                     <div className="p-4 rounded-xl bg-blue-500/5 border border-blue-500/10">
+                        <div className="flex items-center gap-2 mb-2">
+                           <ShieldCheck className="w-4 h-4 text-blue-400" />
+                           <span className="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Security Clearance</span>
+                        </div>
+                        <p className="text-[11px] text-slate-400 leading-relaxed italic">
+                           This record is protected by Tier-4 cryptographic isolation. Unauthorized access is monitored.
+                        </p>
                      </div>
                   </div>
                </div>

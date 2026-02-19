@@ -14,7 +14,8 @@ import {
   CheckCircle2,
   Clock,
   AlertCircle,
-  Briefcase
+  Briefcase,
+  ShieldCheck
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
@@ -153,6 +154,47 @@ export default function CasesPage() {
             </div>
           )}
         </div>
+
+        {/* Intelligence Processing Overlay */}
+        <AnimatePresence>
+          {generatingSar !== null && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xl"
+            >
+              <div className="max-w-md w-full p-8 text-center space-y-8">
+                <div className="relative">
+                  <div className="w-24 h-24 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin mx-auto" />
+                  <ShieldCheck className="w-10 h-10 text-blue-500 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold font-outfit mb-2">Intelligence Synthesis</h2>
+                  <p className="text-slate-400 text-sm">AEGIS is cross-referencing transactional forensics with regulatory benchmarks...</p>
+                </div>
+                <div className="space-y-3">
+                  <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                    <span>Forensic Analysis</span>
+                    <span className="text-blue-400">Processing</span>
+                  </div>
+                  <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                    <motion.div 
+                      initial={{ width: 0 }}
+                      animate={{ width: "100%" }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                      className="h-full bg-blue-500"
+                    />
+                  </div>
+                </div>
+                <div className="pt-4 flex items-center justify-center gap-2 text-[10px] font-bold text-slate-500 uppercase tracking-tighter">
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                  Securing intelligence stream...
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </ProtectedRoute>
   )
