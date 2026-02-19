@@ -68,7 +68,7 @@ export default function DashboardPage() {
   const severityData = riskSummary?.severity_breakdown
     ? Object.entries(riskSummary.severity_breakdown).map(([name, value]) => ({
         name,
-        count: value
+        count: value as number
       }))
     : []
 

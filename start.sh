@@ -54,15 +54,15 @@ fi
 source venv/bin/activate
 
 # Kill existing process if any
-if lsof -ti:8000 &> /dev/null; then
+if lsof -ti:3002 &> /dev/null; then
     print_info "Killing existing backend process..."
-    lsof -ti:8000 | xargs kill -9
+    lsof -ti:3002 | xargs kill -9
 fi
 
 # Start backend
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000 &
+uvicorn app.main:app --reload --host 0.0.0.0 --port 3002 &
 BACKEND_PID=$!
-print_success "Backend started (PID: $BACKEND_PID) on http://localhost:8000"
+print_success "Backend started (PID: $BACKEND_PID) on http://localhost:3002"
 
 # Start frontend in background
 print_info "Starting frontend..."
@@ -90,8 +90,8 @@ print_success "AEGIS is running!"
 echo ""
 echo "📍 Access points:"
 echo "   - Frontend: http://localhost:3000"
-echo "   - API Docs: http://localhost:8000/docs"
-echo "   - Health:   http://localhost:8000/healthz"
+echo "   - API Docs: http://localhost:3002/docs"
+echo "   - Health:   http://localhost:3002/healthz"
 echo ""
 echo "👤 Demo credentials:"
 echo "   - Admin:    admin / admin123"

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import ProtectedRoute from '@/components/ProtectedRoute'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { 
   BrainCircuit, 
   TrendingUp, 
@@ -14,9 +14,7 @@ import {
   Zap,
   Target,
   ChevronRight,
-  RefreshCw,
-  Search,
-  Filter
+  RefreshCw
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { api } from '@/lib/api'
@@ -33,13 +31,19 @@ export default function IntelligencePage() {
   const fetchIntelligence = async () => {
     try {
       setLoading(true)
+      setError(null)
       const response = await api.get('/risk/intelligence/cross-case')
-      if (response.status !== 200) {
-        throw new Error('Access Denied: Admin or Auditor role equivalent required for Cross-Case analysis.')
+      console.log('Intelligence API Response:', response.data)
+      
+      if (response.data.success && response.data.intelligence) {
+        setIntelligence(response.data.intelligence)
+      } else {
+        throw new Error('Failed to load intelligence data')
       }
-      setIntelligence(response.data.intelligence)
     } catch (err: any) {
-      setError(err.message)
+      console.error('Intelligence fetch error:', err)
+      const errorMessage = err.response?.data?.detail || err.message || 'Failed to load cross-case intelligence'
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }
@@ -115,8 +119,9 @@ export default function IntelligencePage() {
                     <Target className="w-6 h-6 text-blue-500" />
                     <h2 className="text-2xl font-bold font-outfit">Strategic Actions</h2>
                  </div>
+                 {intelligence?.recommendations && intelligence.recommendations.length > 0 ? (
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {intelligence?.recommendations?.map((rec: any, idx: number) => (
+                    {intelligence.recommendations.map((rec: any, idx: number) => (
                       <motion.div 
                         whileHover={{ y: -5 }}
                         key={idx} 
@@ -148,6 +153,11 @@ export default function IntelligencePage() {
                       </motion.div>
                     ))}
                  </div>
+                 ) : (
+                    <div className="glass-card p-8 text-center">
+                       <p className="text-slate-400">No strategic recommendations available at this time.</p>
+                    </div>
+                 )}
               </section>
 
               {/* Emerging Threat Grid */}
@@ -156,8 +166,9 @@ export default function IntelligencePage() {
                     <Zap className="w-6 h-6 text-red-500" />
                     <h2 className="text-2xl font-bold font-outfit">Emerging Vulnerabilities</h2>
                  </div>
+                 {intelligence?.emerging_typologies && intelligence.emerging_typologies.length > 0 ? (
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {intelligence?.emerging_typologies?.map((threat: any, idx: number) => (
+                    {intelligence.emerging_typologies.map((threat: any, idx: number) => (
                        <div key={idx} className="glass-card p-6 border-red-500/10 hover:border-red-500/30 transition-all">
                           <div className="flex items-center justify-between mb-4">
                              <div className="w-12 h-12 rounded-xl bg-red-500/5 flex items-center justify-center text-red-500 border border-red-500/10">
@@ -182,6 +193,11 @@ export default function IntelligencePage() {
                        </div>
                     ))}
                  </div>
+                 ) : (
+                    <div className="glass-card p-8 text-center">
+                       <p className="text-slate-400">No emerging vulnerabilities detected at this time.</p>
+                    </div>
+                 )}
               </section>
            </div>
 
@@ -193,8 +209,9 @@ export default function IntelligencePage() {
                     <h3 className="text-lg font-bold font-outfit">Typology Drift</h3>
                     <TrendingUp className="w-4 h-4 text-slate-500" />
                  </div>
+                 {intelligence?.drift_alerts && intelligence.drift_alerts.length > 0 ? (
                  <div className="divide-y divide-white/5">
-                    {intelligence?.drift_alerts?.map((alert: any, idx: number) => (
+                    {intelligence.drift_alerts.map((alert: any, idx: number) => (
                        <div key={idx} className="p-5 hover:bg-white/[0.02] transition-colors group">
                           <div className="flex items-center justify-between mb-2">
                              <span className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors uppercase tracking-tight">{alert.typology}</span>
@@ -212,6 +229,9 @@ export default function IntelligencePage() {
                        </div>
                     ))}
                  </div>
+                 ) : (
+                    <div className="text-center text-sm text-slate-400 p-6">No drift alerts detected.</div>
+                 )}
               </div>
 
               {/* Recurring Entity Network */}
@@ -220,8 +240,9 @@ export default function IntelligencePage() {
                     <h3 className="text-lg font-bold font-outfit">Recurring Offenders</h3>
                     <span className="text-[10px] font-bold text-slate-500 bg-white/5 px-2 py-0.5 rounded uppercase tracking-widest">Network Risk</span>
                  </div>
+                 {intelligence?.network_risks && intelligence.network_risks.length > 0 ? (
                  <div className="space-y-6">
-                    {intelligence?.network_risks?.map((risk: any, idx: number) => (
+                    {intelligence.network_risks.map((risk: any, idx: number) => (
                        <div key={idx} className="flex gap-4">
                           <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-slate-700 to-slate-800 flex items-center justify-center shrink-0 border border-white/10 shadow-lg text-xs font-bold font-outfit">
                              {risk.customer_name.substring(0, 2).toUpperCase()}
@@ -239,6 +260,9 @@ export default function IntelligencePage() {
                        </div>
                     ))}
                  </div>
+                 ) : (
+                    <div className="text-center text-sm text-slate-400">No recurring offenders identified.</div>
+                 )}
               </div>
 
               {/* Cluster Map Metadata */}
@@ -247,14 +271,18 @@ export default function IntelligencePage() {
                      <h3 className="text-lg font-bold font-outfit mb-2">Pattern Clusters</h3>
                      <p className="text-xs text-slate-400 mb-6 leading-relaxed">Cross-case grouping of related typologies detected via ML clustering algorithms.</p>
                      
+                     {intelligence?.pattern_clusters && intelligence.pattern_clusters.length > 0 ? (
                      <div className="space-y-3">
-                        {intelligence?.pattern_clusters?.map((cluster: any, idx: number) => (
+                        {intelligence.pattern_clusters.map((cluster: any, idx: number) => (
                            <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5 group-hover:bg-blue-600/5 transition-colors">
                               <span className="text-[11px] font-bold text-white uppercase tracking-tighter">Cluster #{cluster.cluster_id + 1}: {cluster.pattern_type}</span>
                               <span className="text-[10px] font-bold text-blue-400 px-2 py-0.5 rounded-full bg-blue-400/10 border border-blue-400/20">{cluster.size} SARs</span>
                            </div>
                         ))}
                      </div>
+                     ) : (
+                        <div className="text-center text-sm text-slate-400">No pattern clusters detected.</div>
+                     )}
                   </div>
                   <Layers className="absolute -bottom-8 -right-8 w-40 h-40 text-blue-500/[0.03] group-hover:rotate-12 transition-transform duration-700" />
               </div>

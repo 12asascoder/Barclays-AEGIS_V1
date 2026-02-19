@@ -15,7 +15,7 @@ from ..services.regulatory_simulation_service import (
 from ..services.cross_case_intelligence_service import generate_intelligence_report
 from ..core.deps import get_current_user
 
-router = APIRouter(prefix="/risk", tags=["Risk Analysis"])
+router = APIRouter(tags=["Risk Analysis"])
 
 
 @router.get("/analyze/{case_id}")

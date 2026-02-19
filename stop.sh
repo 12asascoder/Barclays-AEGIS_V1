@@ -19,10 +19,10 @@ print_info() {
 echo "🛑 Stopping AEGIS..."
 echo ""
 
-# Stop backend (port 8000)
-if lsof -ti:8000 &> /dev/null; then
+# Stop backend (port 3002)
+if lsof -ti:3002 &> /dev/null; then
     print_info "Stopping backend..."
-    lsof -ti:8000 | xargs kill -9
+    lsof -ti:3002 | xargs kill -9
     print_success "Backend stopped"
 else
     print_info "Backend not running"
