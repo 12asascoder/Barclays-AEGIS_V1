@@ -7,14 +7,14 @@ import ProtectedRoute from '@/components/ProtectedRoute'
 import { useAuth } from '@/lib/AuthContext'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { 
-  TrendingUp, 
-  AlertTriangle, 
-  ShieldCheck, 
-  Activity, 
-  ChevronRight, 
-  Briefcase, 
-  FileText, 
+import {
+  TrendingUp,
+  AlertTriangle,
+  ShieldCheck,
+  Activity,
+  ChevronRight,
+  Briefcase,
+  FileText,
   BrainCircuit,
   PieChart as PieChartIcon
 } from 'lucide-react'
@@ -58,18 +58,18 @@ export default function DashboardPage() {
     )
   }
 
-  const typologyData = riskSummary?.typology_distribution 
+  const typologyData = riskSummary?.typology_distribution
     ? Object.entries(riskSummary.typology_distribution).map(([name, value]) => ({
-        name: name.replace(/_/g, ' ').toUpperCase(),
-        value
-      }))
+      name: name.replace(/_/g, ' ').toUpperCase(),
+      value
+    }))
     : []
 
   const severityData = riskSummary?.severity_breakdown
     ? Object.entries(riskSummary.severity_breakdown).map(([name, value]) => ({
-        name,
-        count: value as number
-      }))
+      name,
+      count: value as number
+    }))
     : []
 
   return (
@@ -95,24 +95,24 @@ export default function DashboardPage() {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <MetricCard 
-            title="Total Cases" 
+          <MetricCard
+            title="Total Cases"
             value={metrics?.sar_volume ?? 0}
             subtitle="SARs processed to date"
             icon={<Briefcase className="w-5 h-5" />}
             trend="+12% from last month"
             color="blue"
           />
-          <MetricCard 
-            title="Avg CQI Score" 
-            value={((riskSummary?.average_cqi_score ?? 0) * 100).toFixed(1) + '%'}
+          <MetricCard
+            title="Avg CQI Score"
+            value={((riskSummary?.average_cqi_score ?? 0)).toFixed(1) + '%'}
             subtitle="Overall report quality"
             icon={<ShieldCheck className="w-5 h-5" />}
             trend="Stable compliance"
             color="emerald"
           />
-          <MetricCard 
-            title="High-Risk Alerts" 
+          <MetricCard
+            title="High-Risk Alerts"
             value={riskSummary?.high_risk_cases ?? 0}
             subtitle="Requiring immediate action"
             icon={<AlertTriangle className="w-5 h-5" />}
@@ -120,8 +120,8 @@ export default function DashboardPage() {
             color="crimson"
             isWarning
           />
-          <MetricCard 
-            title="Risk Detections" 
+          <MetricCard
+            title="Risk Detections"
             value={riskSummary?.total_detections ?? 0}
             subtitle="Automated typology matches"
             icon={<Activity className="w-5 h-5" />}
@@ -156,7 +156,7 @@ export default function DashboardPage() {
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
                     </Pie>
-                    <Tooltip 
+                    <Tooltip
                       contentStyle={{ backgroundColor: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
                       itemStyle={{ color: '#f8fafc' }}
                     />
@@ -167,12 +167,12 @@ export default function DashboardPage() {
               <EmptyChartState />
             )}
             <div className="grid grid-cols-2 gap-3 mt-4">
-               {typologyData.map((d, i) => (
-                 <div key={d.name} className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
-                   <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                   {d.name}
-                 </div>
-               ))}
+              {typologyData.map((d, i) => (
+                <div key={d.name} className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
+                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
+                  {d.name}
+                </div>
+              ))}
             </div>
           </div>
 
@@ -189,34 +189,34 @@ export default function DashboardPage() {
                     <AreaChart data={metrics.risk_score_trend}>
                       <defs>
                         <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
-                          <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                          <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
+                          <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
                         </linearGradient>
                       </defs>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
-                      <XAxis 
-                        dataKey="date" 
-                        axisLine={false} 
-                        tickLine={false} 
-                        tick={{ fill: '#94a3b8', fontSize: 10 }} 
-                      />
-                      <YAxis 
-                        axisLine={false} 
-                        tickLine={false} 
+                      <XAxis
+                        dataKey="date"
+                        axisLine={false}
+                        tickLine={false}
                         tick={{ fill: '#94a3b8', fontSize: 10 }}
-                        domain={[0, 1]}
                       />
-                      <Tooltip 
-                         contentStyle={{ backgroundColor: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
-                         itemStyle={{ color: '#f8fafc' }}
+                      <YAxis
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{ fill: '#94a3b8', fontSize: 10 }}
+                        domain={[0, 100]}
                       />
-                      <Area 
-                        type="monotone" 
-                        dataKey="score" 
-                        stroke="#3b82f6" 
+                      <Tooltip
+                        contentStyle={{ backgroundColor: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
+                        itemStyle={{ color: '#f8fafc' }}
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="score"
+                        stroke="#3b82f6"
                         strokeWidth={3}
-                        fillOpacity={1} 
-                        fill="url(#colorScore)" 
+                        fillOpacity={1}
+                        fill="url(#colorScore)"
                       />
                     </AreaChart>
                   </ResponsiveContainer>
@@ -240,7 +240,7 @@ export default function DashboardPage() {
                           <span className="text-white">{d.count} Cases</span>
                         </div>
                         <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
-                          <motion.div 
+                          <motion.div
                             initial={{ width: 0 }}
                             animate={{ width: `${percentage}%` }}
                             className={cn("h-full rounded-full", color)}
@@ -252,40 +252,40 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-               <div className="glass-card p-6 flex flex-col justify-between overflow-hidden relative">
-                  <div className="relative z-10">
-                    <h3 className="text-lg font-bold font-outfit mb-2">Pattern Intelligence</h3>
-                    <p className="text-sm text-slate-400">Deep analysis of typology drift and cross-case emerging threats.</p>
-                  </div>
-                  <Link 
-                    href="/intelligence"
-                    className="glossy-button mt-4 flex items-center justify-center gap-2 group w-full"
-                  >
-                    Launch Intelligence Core
-                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                  <BrainCircuit className="absolute -bottom-4 -right-4 w-32 h-32 text-blue-500/5 rotate-12" />
-               </div>
+              <div className="glass-card p-6 flex flex-col justify-between overflow-hidden relative">
+                <div className="relative z-10">
+                  <h3 className="text-lg font-bold font-outfit mb-2">Pattern Intelligence</h3>
+                  <p className="text-sm text-slate-400">Deep analysis of typology drift and cross-case emerging threats.</p>
+                </div>
+                <Link
+                  href="/intelligence"
+                  className="glossy-button mt-4 flex items-center justify-center gap-2 group w-full"
+                >
+                  Launch Intelligence Core
+                  <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
+                <BrainCircuit className="absolute -bottom-4 -right-4 w-32 h-32 text-blue-500/5 rotate-12" />
+              </div>
             </div>
           </div>
         </div>
 
         {/* Quick Access Row */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-           <QuickActionCard 
-              href="/cases"
-              title="Review Active Cases"
-              desc="Deep dive into suspicious activity alerts and customer profiles."
-              icon={<Briefcase className="w-6 h-6" />}
-              stats={`${metrics?.sar_volume || 0} Open`}
-           />
-           <QuickActionCard 
-              href="/sar"
-              title="Filing Management"
-              desc="View, edit and run regulatory simulations on generated SARs."
-              icon={<FileText className="w-6 h-6" />}
-              stats="14 Processing"
-           />
+          <QuickActionCard
+            href="/cases"
+            title="Review Active Cases"
+            desc="Deep dive into suspicious activity alerts and customer profiles."
+            icon={<Briefcase className="w-6 h-6" />}
+            stats={`${metrics?.sar_volume || 0} Open`}
+          />
+          <QuickActionCard
+            href="/sar"
+            title="Filing Management"
+            desc="View, edit and run regulatory simulations on generated SARs."
+            icon={<FileText className="w-6 h-6" />}
+            stats="14 Processing"
+          />
         </div>
       </div>
     </ProtectedRoute>
@@ -301,7 +301,7 @@ function MetricCard({ title, value, subtitle, icon, trend, color, isWarning = fa
   }
 
   return (
-    <motion.div 
+    <motion.div
       whileHover={{ scale: 1.02 }}
       className={cn("glass-card p-6 flex flex-col", isWarning && "border-red-500/30 shadow-[0_0_30px_-10px_rgba(239,68,68,0.2)]")}
     >
